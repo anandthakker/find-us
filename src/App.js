@@ -10,7 +10,9 @@ class App extends Component {
         version: 8,
         sources: {},
         layers: []
-      }
+      },
+      center: [0, 0],
+      zoom: 0
     };
   }
 
@@ -19,6 +21,20 @@ class App extends Component {
       .then((resp) => resp.json())
       .then((json) => { this.setState({ style: json }) })
       .catch((error) => console.error(error))
+
+    window.navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log(position)
+        this.setState({
+          center: [
+            position.coords.longitude,
+            position.coords.latitude
+          ],
+          zoom: 17
+        })
+      },
+      console.error.bind(console),
+      { enableHighAccuracy: true });
   }
 
   render() {
@@ -28,7 +44,11 @@ class App extends Component {
           <h2>TITLE</h2>
         </div>
         <div className='App-main'>
-          <Map stylesheet={this.state.style} />
+          <Map
+            zoom={this.state.zoom}
+            center={this.state.center}
+            stylesheet={this.state.style}
+          />
         </div>
       </div>
     );

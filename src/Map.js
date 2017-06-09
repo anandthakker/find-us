@@ -24,7 +24,15 @@ class Map extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.stylesheet) {
-      this.state.map.setStyle(nextProps.stylesheet)
+      this.state.map.setStyle(nextProps.stylesheet);
+    }
+
+    if (nextProps.center !== this.props.center) {
+      this.state.map.setCenter(nextProps.center);
+    }
+
+    if (nextProps.zoom !== this.props.zoom) {
+      this.state.map.setZoom(nextProps.zoom);
     }
   }
 
