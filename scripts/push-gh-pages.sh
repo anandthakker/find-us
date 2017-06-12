@@ -22,17 +22,13 @@ cd "$pages_dir"
 cdup=$(git rev-parse --show-cdup)
 if [ "$cdup" != '' ]
 then
+    rm -rf .git
     git init
-    git remote add --fetch origin "$remote"
+    git remote add origin "$remote"
 fi
 
-if git rev-parse --verify origin/gh-pages > /dev/null 2>&1
-then
-    git checkout gh-pages
-else
-    git checkout --orphan gh-pages
-fi
+git checkout -b gh-pages
 
 git add .
 git commit -m "pages built at $described_rev" -e
-git push origin gh-pages
+git push origin gh-pages --force
