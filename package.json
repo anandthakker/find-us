@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/mapbox-gl-directions": "^3.1.2",
     "mapbox-gl": "^0.37.0",
     "react": "^15.5.4",
     "react-color": "^2.12.0",

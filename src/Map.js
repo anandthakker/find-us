@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import mapboxgl from 'mapbox-gl';
-import './Map.css';
+import mapboxgl from 'mapbox-gl'
+import './Map.css'
+import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css'
+const MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 class Map extends Component {
   componentDidMount() {
@@ -34,6 +36,22 @@ class Map extends Component {
         map.panTo(e.lngLat);
       }
     })
+
+    if (this.props.initialDirectionsOptions) {
+      const options = this.props.initialDirectionsOptions;
+      this.directionsPlugin = new MapboxDirections(Object.assign({
+        accessToken: mapboxgl.accessToken
+      }, options));
+      map.addControl(this.directionsPlugin, 'top-left')
+
+      map.once('load', () => {
+        this.directionsPlugin.setOrigin(options.from);
+        this.directionsPlugin.setDestination(options.to);
+        if (options.onRoute) {
+          this.directionsPlugin.on('route', options.onRoute);
+        }
+      })
+    }
 
     this.setState({map: map});
   }

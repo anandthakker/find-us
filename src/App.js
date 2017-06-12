@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route
 } from 'react-router-dom'
 import { CreateEmbed } from './CreateEmbed'
+import { Directions } from './Directions'
 
 import './App.css';
 
@@ -14,22 +15,21 @@ const Loading = ({message}) => (
   </div>
 )
 
-const Directions = () => (
-  <div/>
-)
-
 class App extends Component {
   constructor() {
     super();
+    const initialLocation = localStorage.getItem('userLocation') ?
+      JSON.parse(localStorage.getItem('userLocation')) : undefined;
+
     this.state = {
       baseStyle: {
         version: 8,
         sources: {},
         layers: []
       },
-      userLocation: undefined,
+      userLocation: initialLocation,
       embedLocation: undefined,
-      embedZoom: undefined,
+      embedZoom: initialLocation ? 15.5 : undefined,
       embedColor: '#4264FB'
     };
   }
@@ -56,11 +56,10 @@ class App extends Component {
     // Get user's current location
     window.navigator.geolocation.getCurrentPosition(
       (position) => {
+        const coords = [ position.coords.longitude, position.coords.latitude ];
+        localStorage.setItem('userLocation', JSON.stringify(coords));
         this.setState({
-          userLocation: [
-            position.coords.longitude,
-            position.coords.latitude
-          ],
+          userLocation: coords,
           embedZoom: 15.5
         });
       },
@@ -93,12 +92,18 @@ class App extends Component {
                 <Loading message='Finding your current location' />
               }
             />
-            <Route path='/to/:lon/:lat'
-              render={({match}) =>
+            <Route path='/to/:lon/:lat/:color'
+              render={({match}) => {
+                console.log(match)
+                return this.state.userLocation ?
                 <Directions
-                  stylesheet={this.state.baseStyle}
-                  destination={[match.lon, match.lat]}
-                />
+                  baseStyle={this.state.baseStyle}
+                  defaultFrom={this.state.userLocation}
+                  defaultTo={[match.params.lon, match.params.lat].map(Number)}
+                  color={match.params.color}
+                /> :
+                <Loading message='Finding your current location' />
+              }
               }
             />
           </div>
