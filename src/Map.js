@@ -6,11 +6,11 @@ mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
 
 class Map extends Component {
   componentDidMount() {
-    const map = window.map = new mapboxgl.Map({
+    const map = this.map = window.map = new mapboxgl.Map({
       container: this.refs.map,
       attributionControl: false,
-      center: this.props.center || [0, 0],
-      zoom: this.props.zoom || 0,
+      center: this.props.defaultCenter || this.props.center || [0, 0],
+      zoom: this.props.defaultZoom || this.props.zoom || 0,
       bearing: this.props.bearing || 0,
       pitch: this.props.pitch || 0,
       style: this.props.stylesheet,
@@ -19,7 +19,27 @@ class Map extends Component {
 
     map.off('tile.error', map.onError);
 
+    map.on('moveend', (e) => {
+      if (this.props.onMoveEnd) {
+        this.props.onMoveEnd(e);
+      }
+    });
+
+    map.on('click', (e) => {
+      if (this.props.onClick) {
+        this.props.onClick(e);
+      }
+
+      if (this.props.centerOnClick) {
+        map.panTo(e.lngLat);
+      }
+    })
+
     this.setState({map: map});
+  }
+
+  componentWillUnmount() {
+    this.map.remove();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -37,7 +57,7 @@ class Map extends Component {
   }
 
   render() {
-    return <div id='map' ref='map' className='MapboxMap' />
+    return <div ref='map' className='MapboxMap' />
   }
 }
 
