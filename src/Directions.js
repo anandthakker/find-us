@@ -6,7 +6,7 @@ class Directions extends Component {
   render () {
     return (
       <Map
-        stylesheet={this.props.baseStyle}
+        defaultStylesheet={this.props.baseStyle}
         initialDirectionsOptions={{
           from: this.props.defaultFrom,
           to: this.props.defaultTo,

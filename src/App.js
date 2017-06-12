@@ -22,11 +22,7 @@ class App extends Component {
       JSON.parse(localStorage.getItem('userLocation')) : undefined;
 
     this.state = {
-      baseStyle: {
-        version: 8,
-        sources: {},
-        layers: []
-      },
+      baseStyle: undefined,
       userLocation: initialLocation,
       embedLocation: undefined,
       embedZoom: initialLocation ? 15.5 : undefined,
@@ -77,7 +73,7 @@ class App extends Component {
           <div className='App-main'>
             <Route exact path='/create'
               render={() =>
-                this.state.userLocation ?
+                (this.state.userLocation && this.state.baseStyle) ?
                 <CreateEmbed
                   baseStyle={this.state.baseStyle}
                   defaultCenter={this.state.userLocation}
@@ -95,7 +91,7 @@ class App extends Component {
             <Route path='/to/:lon/:lat/:color'
               render={({match}) => {
                 console.log(match)
-                return this.state.userLocation ?
+                return (this.state.userLocation && this.state.baseStyle) ?
                 <Directions
                   baseStyle={this.state.baseStyle}
                   defaultFrom={this.state.userLocation}

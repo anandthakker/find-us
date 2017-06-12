@@ -11,11 +11,11 @@ class Map extends Component {
     const map = this.map = window.map = new mapboxgl.Map({
       container: this.refs.map,
       attributionControl: false,
-      center: this.props.defaultCenter || this.props.center || [0, 0],
-      zoom: this.props.defaultZoom || this.props.zoom || 0,
+      center: this.props.center || this.props.defaultCenter || [0, 0],
+      zoom: this.props.zoom || this.props.defaultZoom || 0,
       bearing: this.props.bearing || 0,
       pitch: this.props.pitch || 0,
-      style: this.props.stylesheet,
+      style: this.props.stylesheet || this.props.defaultStylesheet,
       maxZoom: 20
     });
 
